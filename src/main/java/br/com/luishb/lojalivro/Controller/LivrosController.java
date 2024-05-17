@@ -1,4 +1,4 @@
-package br.com.diogotb.loja_livros.Controller;
+package br.com.luishb.lojalivro.Controller;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.lojalivro.Repository.LivrosRepository;
-import br.com.lojalivro.Model.Livro;
+import br.com.luishb.*;
+import br.com.luishb.lojalivro.Model.Livro;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,17 +22,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class LivrosController {
     
     @Autowired
-    LivrosRepository livrosRepository;
+    ListCrudRepository livrosRepository;
 
     @GetMapping("/livros-list")
-    public List<Livro> list() {
-        return (List<Livro>) this.livrosRepository.findAll();    
+    public ModelAndView list() {
+        ModelAndView mv = new ModelAndView("/livros-list");
+        mv.addObject("livros", livrosRepository.findAll());
+        return mv ;
     }
 
     @PostMapping("/livros-add")
     public ModelAndView create(@RequestBody Livro livro) {
         ModelAndView mv = new ModelAndView("livros-add");
-        ListCrudRepository.save(livro);
+        livrosRepository.save(livro);
+        mv.setViewName("redirect:/livros-list");
         return mv;
     }
     
